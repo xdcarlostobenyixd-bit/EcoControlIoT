@@ -1,0 +1,17 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F3F7F5">
+<LinearLayout android:orientation="vertical" android:padding="18dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+    <TextView android:text="EcoControl IoT" android:textSize="26sp" android:textStyle="bold" android:textColor="#14532D" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    <TextView android:id="@+id/localIp" android:text="IP local:" android:textSize="14sp" android:layout_marginTop="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    <TextView android:id="@+id/status" android:text="Sin conexión" android:textColor="#1D4ED8" android:layout_marginTop="12dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <TextView android:text="Interconexión Wi-Fi" android:textSize="19sp" android:textStyle="bold" android:layout_marginTop="18dp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    <Button android:id="@+id/hostButton" android:text="ACTUAR COMO SERVIDOR / SENSOR" android:layout_marginTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <EditText android:id="@+id/hostIp" android:hint="IP del dispositivo servidor (ej. 192.168.1.20)" android:inputType="text" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <Button android:id="@+id/connectButton" android:text="CONECTAR COMO CLIENTE / CONTROLADOR" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <TextView android:text="Lecturas del invernadero" android:textSize="19sp" android:textStyle="bold" android:layout_marginTop="20dp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    <TextView android:id="@+id/readings" android:textSize="20sp" android:fontFamily="monospace" android:padding="14dp" android:background="#DCEFE2" android:layout_marginTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <Switch android:id="@+id/relay" android:text="Actuador: ventilación / relé" android:textSize="17sp" android:layout_marginTop="10dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <TextView android:text="Últimas mediciones guardadas en SQLite" android:textSize="19sp" android:textStyle="bold" android:layout_marginTop="20dp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    <TextView android:id="@+id/history" android:textSize="14sp" android:fontFamily="monospace" android:padding="12dp" android:background="#FFFFFF" android:layout_marginTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <Button android:id="@+id/refreshButton" android:text="ACTUALIZAR HISTORIAL" android:layout_marginTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
+    <Button android:id="@+id/logoutButton" android:text="CERRAR SESIÓN" android:layout_marginTop="10dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
+</LinearLayout></ScrollView>

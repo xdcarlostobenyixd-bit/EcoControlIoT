@@ -1,0 +1,7 @@
+Proyecto: EcoControl IoT
+Asignatura: TI3042 Aplicaciones Móviles para IoT
+Entrega: Unidad 2
+Credenciales demo: admin / IoT2026
+Puerto Wi-Fi local: TCP 5050
+
+Abrir la carpeta en Android Studio. La guía solicita entregar un enlace a GitHub; después de revisar el proyecto, súbelo a un repositorio propio y pega ese enlace en la plataforma AAI.
