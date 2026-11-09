@@ -1,17 +1,403 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F3F7F5">
-<LinearLayout android:orientation="vertical" android:padding="18dp" android:layout_width="match_parent" android:layout_height="wrap_content">
-    <TextView android:text="EcoControl IoT" android:textSize="26sp" android:textStyle="bold" android:textColor="#14532D" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-    <TextView android:id="@+id/localIp" android:text="IP local:" android:textSize="14sp" android:layout_marginTop="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-    <TextView android:id="@+id/status" android:text="Sin conexión" android:textColor="#1D4ED8" android:layout_marginTop="12dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <TextView android:text="Interconexión Wi-Fi" android:textSize="19sp" android:textStyle="bold" android:layout_marginTop="18dp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-    <Button android:id="@+id/hostButton" android:text="ACTUAR COMO SERVIDOR / SENSOR" android:layout_marginTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <EditText android:id="@+id/hostIp" android:hint="IP del dispositivo servidor (ej. 192.168.1.20)" android:inputType="text" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <Button android:id="@+id/connectButton" android:text="CONECTAR COMO CLIENTE / CONTROLADOR" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <TextView android:text="Lecturas del invernadero" android:textSize="19sp" android:textStyle="bold" android:layout_marginTop="20dp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-    <TextView android:id="@+id/readings" android:textSize="20sp" android:fontFamily="monospace" android:padding="14dp" android:background="#DCEFE2" android:layout_marginTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <Switch android:id="@+id/relay" android:text="Actuador: ventilación / relé" android:textSize="17sp" android:layout_marginTop="10dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <TextView android:text="Últimas mediciones guardadas en SQLite" android:textSize="19sp" android:textStyle="bold" android:layout_marginTop="20dp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-    <TextView android:id="@+id/history" android:textSize="14sp" android:fontFamily="monospace" android:padding="12dp" android:background="#FFFFFF" android:layout_marginTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <Button android:id="@+id/refreshButton" android:text="ACTUALIZAR HISTORIAL" android:layout_marginTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-    <Button android:id="@+id/logoutButton" android:text="CERRAR SESIÓN" android:layout_marginTop="10dp" android:layout_width="match_parent" android:layout_height="wrap_content" />
-</LinearLayout></ScrollView>
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Header Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/card_surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/card_stroke"
+            app:strokeWidth="1dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <FrameLayout
+                    android:id="@+id/logoWrap"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_status_badge"
+                    android:backgroundTint="@color/primary_container">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Logo"
+                        android:src="@drawable/ic_eco_leaf"
+                        app:tint="@color/primary" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="12dp"
+                    android:layout_toEndOf="@id/logoWrap"
+                    android:layout_toStartOf="@id/logoutButton"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="EcoControl IoT"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/localIp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="IP local: Obteniendo..."
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logoutButton"
+                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="Cerrar sesión"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_logout"
+                    app:iconTint="@color/text_body" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Status Pill -->
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_status_badge"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+            android:text="Sin conexión activa"
+            android:textColor="@color/status_blue"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Wi-Fi Connection Setup Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/card_surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/card_stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="Wi-Fi"
+                        android:src="@drawable/ic_wifi"
+                        app:tint="@color/primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Conectividad Wi-Fi (P2P / TCP)"
+                        android:textColor="@color/text_title"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/hostButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="14dp"
+                    android:backgroundTint="@color/primary"
+                    android:text="ACTUAR COMO SERVIDOR / SENSOR"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_wifi"
+                    app:iconGravity="textStart"
+                    app:iconTint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginVertical="8dp"
+                    android:text="— O CONECTAR A OTRO NODO —"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="IP del servidor (ej. 192.168.1.20 o 10.0.2.2)"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/hostIp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textColor="@color/text_title"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/connectButton"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/secondary_container"
+                    android:text="CONECTAR COMO CLIENTE"
+                    android:textColor="@color/secondary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Live Telemetry Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/card_surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/card_stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="Sensores"
+                        android:src="@drawable/ic_thermostat"
+                        app:tint="@color/temp_color" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Telemetría del Invernadero"
+                        android:textColor="@color/text_title"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/readings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_status_badge"
+                    android:backgroundTint="@color/primary_container"
+                    android:fontFamily="monospace"
+                    android:lineSpacingExtra="4dp"
+                    android:padding="14dp"
+                    android:textColor="@color/primary_dark"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Actuator / Relay Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/card_surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/card_stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="Relé"
+                        android:src="@drawable/ic_fan"
+                        app:tint="@color/primary" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="Control de Ventilación (Relé)"
+                        android:textColor="@color/text_title"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/relay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Activa o desactiva el extractor del invernadero. El cambio se replica en ambos nodos."
+                    android:textColor="@color/text_muted"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SQLite History Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/card_surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/card_stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:contentDescription="BD"
+                            android:src="@drawable/ic_database"
+                            app:tint="@color/primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Historial SQLite"
+                            android:textColor="@color/text_title"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/refreshButton"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:paddingHorizontal="10dp"
+                        android:text="Actualizar"
+                        android:textColor="@color/primary"
+                        android:textSize="12sp"
+                        app:cornerRadius="10dp"
+                        app:icon="@drawable/ic_refresh"
+                        app:iconGravity="textStart"
+                        app:iconSize="16dp"
+                        app:iconTint="@color/primary" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_status_badge"
+                    android:backgroundTint="#F8FAFC"
+                    android:fontFamily="monospace"
+                    android:lineSpacingExtra="3dp"
+                    android:padding="12dp"
+                    android:text="Sin mediciones todavía"
+                    android:textColor="@color/text_body"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

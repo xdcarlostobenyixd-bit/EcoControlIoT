@@ -1,9 +1,12 @@
 package com.ecocontrol.iot
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+import android.widget.CompoundButton
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.ecocontrol.iot.data.IoTDatabase
 import com.ecocontrol.iot.net.WifiPeer
 import com.ecocontrol.iot.security.AuthStore
@@ -13,13 +16,13 @@ import java.util.Locale
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var db: IoTDatabase
     private lateinit var peer: WifiPeer
     private lateinit var status: TextView
     private lateinit var readings: TextView
     private lateinit var history: TextView
-    private lateinit var relay: Switch
+    private lateinit var relay: CompoundButton
     private var temp = 22.5
     private var humidity = 55.0
     private var isHost = false
@@ -31,6 +34,7 @@ class MainActivity : Activity() {
         } else {
             peer.send("RELAY|${if (checked) 1 else 0}")
         }
+        render()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +61,16 @@ class MainActivity : Activity() {
             finish()
         }
 
-        peer.onStatus = { text -> runOnUiThread { status.text = text } }
+        peer.onStatus = { text ->
+            runOnUiThread {
+                val icon = when {
+                    text.contains("activo", ignoreCase = true) || text.contains("conectado", ignoreCase = true) -> "🟢"
+                    text.contains("error", ignoreCase = true) || text.contains("detenido", ignoreCase = true) -> "🔴"
+                    else -> "🔵"
+                }
+                status.text = "$icon $text"
+            }
+        }
         peer.onMessage = { message -> handleMessage(message) }
         showHistory()
         render()
@@ -65,7 +78,7 @@ class MainActivity : Activity() {
 
     private fun startHost() {
         isHost = true
-        status.text = "Iniciando servidor Wi-Fi…"
+        status.text = "🟡 Iniciando servidor Wi-Fi…"
         peer.startServer()
         thread {
             while (isHost) {
@@ -82,7 +95,7 @@ class MainActivity : Activity() {
     private fun connectToHost() {
         val ip = findViewById<EditText>(R.id.hostIp).text.toString().trim()
         if (ip.isBlank()) {
-            status.text = "Escribe la IP del dispositivo servidor"
+            status.text = "⚠️ Escribe la IP del dispositivo servidor"
             return
         }
         isHost = false
@@ -114,13 +127,15 @@ class MainActivity : Activity() {
                 relay.isChecked = r
                 relay.setOnCheckedChangeListener(relayListener)
                 db.addEvent("RELAY", "Control remoto: ${if (r) "ON" else "OFF"}")
+                render()
             }
             broadcastState()
         }
     }
 
     private fun render() {
-        readings.text = "Temperatura  ${String.format(Locale.US, "%.1f", temp)} °C\nHumedad       ${String.format(Locale.US, "%.1f", humidity)} %\nEstado relé   ${if (relay.isChecked) "ACTIVADO" else "DESACTIVADO"}"
+        val relayState = if (relay.isChecked) "🟢 ACTIVADO" else "⚪ DESACTIVADO"
+        readings.text = "🌡️ Temperatura:  ${String.format(Locale.US, "%.1f", temp)} °C\n💧 Humedad:      ${String.format(Locale.US, "%.1f", humidity)} %\n⚡ Ventilación:  $relayState"
     }
 
     private fun showHistory() {

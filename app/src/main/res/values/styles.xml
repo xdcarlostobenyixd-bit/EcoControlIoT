@@ -1,5 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.EcoControl" parent="android:style/Theme.Material.Light.NoActionBar">
-        <item name="android:fontFamily">sans</item><item name="android:colorAccent">#16A34A</item><item name="android:navigationBarColor">#14532D</item><item name="android:statusBarColor">#14532D</item><item name="android:windowLightStatusBar">false</item>
+    <style name="Theme.EcoControl" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>
